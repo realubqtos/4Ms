@@ -1,0 +1,8 @@
+🚀 Starting 4Ms Backend API on port 8000...
+📝 API Documentation: http://localhost:8000/docs
+
+INFO:     Started server process [269]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:39070 - "GET /health HTTP/1.1" 200 OK

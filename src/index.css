@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Lab Theme - Clean Scientific Space */
+  --lab-bg: #F8FAFB;
+  --lab-surface: rgba(255, 255, 255, 0.75);
+  --lab-surface-hover: rgba(255, 255, 255, 0.85);
+  --lab-border: rgba(59, 130, 246, 0.15);
+  --lab-text-primary: #111827;
+  --lab-text-secondary: #4B5563;
+  --lab-text-tertiary: #9CA3AF;
+  --lab-accent-1: #3B82F6;
+  --lab-accent-2: #10B981;
+  --lab-accent-3: #F97316;
+  --lab-shadow: rgba(0, 0, 0, 0.08);
+  --lab-glass-bg: rgba(255, 255, 255, 0.7);
+  --lab-glass-border: rgba(59, 130, 246, 0.2);
+
+  /* Sketchbook Theme - Cozy Armchair Setting */
+  --sketchbook-bg: #FFF9E6;
+  --sketchbook-surface: rgba(255, 250, 240, 0.8);
+  --sketchbook-surface-hover: rgba(255, 248, 230, 0.9);
+  --sketchbook-border: rgba(180, 130, 90, 0.2);
+  --sketchbook-text-primary: #2C2416;
+  --sketchbook-text-secondary: #5C4A33;
+  --sketchbook-text-tertiary: #8B7355;
+  --sketchbook-accent-1: #D97706;
+  --sketchbook-accent-2: #059669;
+  --sketchbook-accent-3: #DC2626;
+  --sketchbook-shadow: rgba(92, 74, 51, 0.12);
+  --sketchbook-glass-bg: rgba(255, 250, 240, 0.75);
+  --sketchbook-glass-border: rgba(217, 119, 6, 0.25);
+
+  /* Blueprint Theme - Architect's Table */
+  --blueprint-bg: #1E2A3A;
+  --blueprint-surface: rgba(44, 62, 80, 0.75);
+  --blueprint-surface-hover: rgba(52, 73, 94, 0.85);
+  --blueprint-border: rgba(6, 182, 212, 0.3);
+  --blueprint-text-primary: #F0F9FF;
+  --blueprint-text-secondary: #BAE6FD;
+  --blueprint-text-tertiary: #7DD3FC;
+  --blueprint-accent-1: #06B6D4;
+  --blueprint-accent-2: #FBBF24;
+  --blueprint-accent-3: #EC4899;
+  --blueprint-shadow: rgba(0, 0, 0, 0.4);
+  --blueprint-glass-bg: rgba(44, 62, 80, 0.65);
+  --blueprint-glass-border: rgba(6, 182, 212, 0.35);
+
+  /* Sidewalk Theme - Street Art & Chalk */
+  --sidewalk-bg: #2A2D34;
+  --sidewalk-surface: rgba(55, 59, 68, 0.75);
+  --sidewalk-surface-hover: rgba(65, 70, 82, 0.85);
+  --sidewalk-border: rgba(156, 163, 175, 0.25);
+  --sidewalk-text-primary: #F9FAFB;
+  --sidewalk-text-secondary: #D1D5DB;
+  --sidewalk-text-tertiary: #9CA3AF;
+  --sidewalk-accent-1: #F59E0B;
+  --sidewalk-accent-2: #10B981;
+  --sidewalk-accent-3: #EF4444;
+  --sidewalk-shadow: rgba(0, 0, 0, 0.5);
+  --sidewalk-glass-bg: rgba(55, 59, 68, 0.7);
+  --sidewalk-glass-border: rgba(156, 163, 175, 0.3);
+}
+
+[data-theme="lab"] {
+  --bg: var(--lab-bg);
+  --surface: var(--lab-surface);
+  --surface-hover: var(--lab-surface-hover);
+  --border: var(--lab-border);
+  --text-primary: var(--lab-text-primary);
+  --text-secondary: var(--lab-text-secondary);
+  --text-tertiary: var(--lab-text-tertiary);
+  --accent-1: var(--lab-accent-1);
+  --accent-2: var(--lab-accent-2);
+  --accent-3: var(--lab-accent-3);
+  --shadow: var(--lab-shadow);
+  --glass-bg: var(--lab-glass-bg);
+  --glass-border: var(--lab-glass-border);
+}
+
+[data-theme="sketchbook"] {
+  --bg: var(--sketchbook-bg);
+  --surface: var(--sketchbook-surface);
+  --surface-hover: var(--sketchbook-surface-hover);
+  --border: var(--sketchbook-border);
+  --text-primary: var(--sketchbook-text-primary);
+  --text-secondary: var(--sketchbook-text-secondary);
+  --text-tertiary: var(--sketchbook-text-tertiary);
+  --accent-1: var(--sketchbook-accent-1);
+  --accent-2: var(--sketchbook-accent-2);
+  --accent-3: var(--sketchbook-accent-3);
+  --shadow: var(--sketchbook-shadow);
+  --glass-bg: var(--sketchbook-glass-bg);
+  --glass-border: var(--sketchbook-glass-border);
+}
+
+[data-theme="blueprint"] {
+  --bg: var(--blueprint-bg);
+  --surface: var(--blueprint-surface);
+  --surface-hover: var(--blueprint-surface-hover);
+  --border: var(--blueprint-border);
+  --text-primary: var(--blueprint-text-primary);
+  --text-secondary: var(--blueprint-text-secondary);
+  --text-tertiary: var(--blueprint-text-tertiary);
+  --accent-1: var(--blueprint-accent-1);
+  --accent-2: var(--blueprint-accent-2);
+  --accent-3: var(--blueprint-accent-3);
+  --shadow: var(--blueprint-shadow);
+  --glass-bg: var(--blueprint-glass-bg);
+  --glass-border: var(--blueprint-glass-border);
+}
+
+[data-theme="sidewalk"] {
+  --bg: var(--sidewalk-bg);
+  --surface: var(--sidewalk-surface);
+  --surface-hover: var(--sidewalk-surface-hover);
+  --border: var(--sidewalk-border);
+  --text-primary: var(--sidewalk-text-primary);
+  --text-secondary: var(--sidewalk-text-secondary);
+  --text-tertiary: var(--sidewalk-text-tertiary);
+  --accent-1: var(--sidewalk-accent-1);
+  --accent-2: var(--sidewalk-accent-2);
+  --accent-3: var(--sidewalk-accent-3);
+  --shadow: var(--sidewalk-shadow);
+  --glass-bg: var(--sidewalk-glass-bg);
+  --glass-border: var(--sidewalk-glass-border);
+}
+
+* {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, backdrop-filter 0.5s ease;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue',
+    'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold;
+    line-height: 1.2;
+  }
+  h2 {
+    @apply text-3xl font-bold;
+    line-height: 1.2;
+  }
+  h3 {
+    @apply text-2xl font-medium;
+    line-height: 1.2;
+  }
+  h4 {
+    @apply text-xl font-medium;
+    line-height: 1.2;
+  }
+  p {
+    line-height: 1.5;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-strong {
+    background: var(--surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+  }
+
+  .glass-light {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-hover:hover {
+    background: var(--surface-hover);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .glass-shadow {
+    box-shadow:
+      0 4px 6px -1px var(--shadow),
+      0 2px 4px -1px var(--shadow),
+      0 0 0 1px var(--glass-border) inset;
+  }
+
+  .glass-shadow-lg {
+    box-shadow:
+      0 10px 15px -3px var(--shadow),
+      0 4px 6px -2px var(--shadow),
+      0 0 0 1px var(--glass-border) inset;
+  }
+
+  .glass-shadow-xl {
+    box-shadow:
+      0 20px 25px -5px var(--shadow),
+      0 10px 10px -5px var(--shadow),
+      0 0 0 1px var(--glass-border) inset;
+  }
+}
+
+@supports not (backdrop-filter: blur(12px)) {
+  .glass {
+    background: var(--surface);
+  }
+  .glass-strong {
+    background: var(--surface);
+  }
+  .glass-light {
+    background: var(--surface);
+  }
+}
