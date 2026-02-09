@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
+import { Palette, Star } from '../components/ui/icons';
+import { domainConfig } from '../lib/domainConfig';
 import type { Database } from '../lib/database.types';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
 type Domain = Database['public']['Enums']['domain'];
-
-const domainColors = {
-  mind: 'var(--accent-1)',
-  matter: 'var(--accent-2)',
-  motion: 'var(--accent-3)',
-  mathematics: 'var(--accent-1)',
-};
-
-const domainIcons = {
-  mind: '🧠',
-  matter: '⚗️',
-  motion: '⚡',
-  mathematics: '📐',
-};
 
 export function FiguresPage() {
   const { user } = useAuth();
@@ -131,32 +119,37 @@ export function FiguresPage() {
           All ({figures.length})
         </button>
         <button
-          className={`px-4 py-2 rounded-lg transition-all opacity-60`}
+          className="px-4 py-2 rounded-lg transition-all opacity-60 flex items-center gap-2"
           style={{
             backgroundColor: 'transparent',
             color: 'var(--text-primary)'
           }}
         >
-          ⭐ Favorites ({favoriteCount})
+          <Star size={16} style={{ color: 'var(--accent-3)' }} />
+          Favorites ({favoriteCount})
         </button>
-        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => (
-          <button
-            key={domain}
-            onClick={() => setSelectedDomain(domain)}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
-              selectedDomain === domain ? 'font-medium' : 'opacity-60'
-            }`}
-            style={{
-              backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
-              color: 'var(--text-primary)'
-            }}
-          >
-            <span>{domainIcons[domain]}</span>
-            <span className="capitalize">
-              {domain} ({figures.filter(f => f.domain === domain).length})
-            </span>
-          </button>
-        ))}
+        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => {
+          const config = domainConfig[domain];
+          const Icon = config.icon;
+          return (
+            <button
+              key={domain}
+              onClick={() => setSelectedDomain(domain)}
+              className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                selectedDomain === domain ? 'font-medium' : 'opacity-60'
+              }`}
+              style={{
+                backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
+                color: 'var(--text-primary)'
+              }}
+            >
+              <Icon size={16} style={{ color: config.color }} />
+              <span className="capitalize">
+                {domain} ({figures.filter(f => f.domain === domain).length})
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {filteredFigures.length === 0 ? (
@@ -167,7 +160,9 @@ export function FiguresPage() {
             borderColor: 'var(--border)'
           }}
         >
-          <div className="text-5xl mb-4">🎨</div>
+          <div className="flex justify-center mb-4">
+            <Palette size={48} style={{ color: 'var(--text-tertiary)' }} />
+          </div>
           <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
             No figures yet
           </h3>
@@ -189,53 +184,57 @@ export function FiguresPage() {
           ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
           : 'space-y-4'
         }>
-          {filteredFigures.map((figure) => (
-            <div
-              key={figure.id}
-              className="rounded-xl border hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
-              style={{
-                backgroundColor: 'var(--surface)',
-                borderColor: 'var(--border)'
-              }}
-            >
+          {filteredFigures.map((figure) => {
+            const config = domainConfig[figure.domain];
+            const DomainIcon = config.icon;
+            return (
               <div
-                className="h-48 flex items-center justify-center text-6xl"
+                key={figure.id}
+                className="rounded-xl border hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                 style={{
-                  backgroundColor: `${domainColors[figure.domain]}10`
+                  backgroundColor: 'var(--surface)',
+                  borderColor: 'var(--border)'
                 }}
               >
-                {domainIcons[figure.domain]}
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <span
-                    className="text-xs px-2 py-1 rounded capitalize"
-                    style={{
-                      backgroundColor: 'var(--bg)',
-                      color: domainColors[figure.domain]
-                    }}
-                  >
-                    {figure.type.replace('_', ' ')}
-                  </span>
-                  {figure.is_favorite && <span>⭐</span>}
-                </div>
-                <p
-                  className="text-sm line-clamp-2 mb-2"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  {figure.prompt}
-                </p>
                 <div
-                  className="text-xs flex items-center gap-2"
-                  style={{ color: 'var(--text-tertiary)' }}
+                  className="h-48 flex items-center justify-center"
+                  style={{
+                    backgroundColor: `color-mix(in srgb, ${config.color} 8%, transparent)`
+                  }}
                 >
-                  <span>{figure.iteration_count} iterations</span>
-                  <span>•</span>
-                  <span>{new Date(figure.created_at).toLocaleDateString()}</span>
+                  <DomainIcon size={48} style={{ color: config.color, opacity: 0.6 }} />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <span
+                      className="text-xs px-2 py-1 rounded capitalize"
+                      style={{
+                        backgroundColor: 'var(--bg)',
+                        color: config.color
+                      }}
+                    >
+                      {figure.type.replace('_', ' ')}
+                    </span>
+                    {figure.is_favorite && <Star size={16} style={{ color: 'var(--accent-3)' }} />}
+                  </div>
+                  <p
+                    className="text-sm line-clamp-2 mb-2"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {figure.prompt}
+                  </p>
+                  <div
+                    className="text-xs flex items-center gap-2"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
+                    <span>{figure.iteration_count} iterations</span>
+                    <span>•</span>
+                    <span>{new Date(figure.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

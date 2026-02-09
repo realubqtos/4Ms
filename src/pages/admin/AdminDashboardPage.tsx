@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
+import { Users, Folder, BarChart3, Library } from '../../components/ui/icons';
 
 interface Stats {
   totalUsers: number;
@@ -56,10 +57,12 @@ export function AdminDashboardPage() {
     title,
     value,
     icon,
+    color,
   }: {
     title: string;
     value: number;
-    icon: string;
+    icon: ReactNode;
+    color: string;
   }) => (
     <div
       className="p-6 rounded-xl border"
@@ -78,8 +81,8 @@ export function AdminDashboardPage() {
           </p>
         </div>
         <div
-          className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-          style={{ backgroundColor: 'var(--bg)' }}
+          className="w-12 h-12 rounded-lg flex items-center justify-center"
+          style={{ backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
         >
           {icon}
         </div>
@@ -128,10 +131,30 @@ export function AdminDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard title="Total Users" value={stats.totalUsers} icon="👥" />
-        <StatCard title="Projects" value={stats.totalProjects} icon="📁" />
-        <StatCard title="Figures" value={stats.totalFigures} icon="📊" />
-        <StatCard title="Collections" value={stats.totalCollections} icon="📚" />
+        <StatCard
+          title="Total Users"
+          value={stats.totalUsers}
+          icon={<Users size={24} style={{ color: 'var(--accent-1)' }} />}
+          color="var(--accent-1)"
+        />
+        <StatCard
+          title="Projects"
+          value={stats.totalProjects}
+          icon={<Folder size={24} style={{ color: 'var(--accent-2)' }} />}
+          color="var(--accent-2)"
+        />
+        <StatCard
+          title="Figures"
+          value={stats.totalFigures}
+          icon={<BarChart3 size={24} style={{ color: 'var(--accent-3)' }} />}
+          color="var(--accent-3)"
+        />
+        <StatCard
+          title="Collections"
+          value={stats.totalCollections}
+          icon={<Library size={24} style={{ color: 'var(--accent-1)' }} />}
+          color="var(--accent-1)"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

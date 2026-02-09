@@ -33,4 +33,10 @@ export {
   Maximize2,
   Newspaper,
   Info,
+  Brain,
+  Zap,
+  Star,
+  Flame,
+  BarChart3,
+  Library,
 } from 'lucide-react';

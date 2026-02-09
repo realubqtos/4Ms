@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
+import { Folder, Palette, Star, Flame } from '../components/ui/icons';
+import { domainConfig, domainKeys } from '../lib/domainConfig';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -52,6 +54,13 @@ export function DashboardPage() {
     );
   }
 
+  const statCards = [
+    { label: 'Projects', value: stats.projectCount, icon: Folder, color: 'var(--accent-1)' },
+    { label: 'Figures', value: stats.figureCount, icon: Palette, color: 'var(--accent-2)' },
+    { label: 'Favorites', value: stats.favoriteCount, icon: Star, color: 'var(--accent-3)' },
+    { label: 'Last 7 days', value: stats.recentFigures, icon: Flame, color: 'var(--accent-1)' },
+  ];
+
   return (
     <div className="space-y-8">
       <div>
@@ -64,97 +73,34 @@ export function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div
-          className="p-6 rounded-xl border"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="flex items-center gap-3 mb-2">
+        {statCards.map((card) => {
+          const Icon = card.icon;
+          return (
             <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-              style={{ backgroundColor: 'var(--bg)' }}
+              key={card.label}
+              className="p-6 rounded-xl border"
+              style={{
+                backgroundColor: 'var(--surface)',
+                borderColor: 'var(--border)'
+              }}
             >
-              📁
-            </div>
-            <div>
-              <div className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {stats.projectCount}
+              <div className="flex items-center gap-3 mb-2">
+                <div
+                  className="w-12 h-12 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--bg)' }}
+                >
+                  <Icon size={24} style={{ color: card.color }} />
+                </div>
+                <div>
+                  <div className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                    {card.value}
+                  </div>
+                </div>
               </div>
+              <div style={{ color: 'var(--text-secondary)' }}>{card.label}</div>
             </div>
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>Projects</div>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-              style={{ backgroundColor: 'var(--bg)' }}
-            >
-              🎨
-            </div>
-            <div>
-              <div className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {stats.figureCount}
-              </div>
-            </div>
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>Figures</div>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-              style={{ backgroundColor: 'var(--bg)' }}
-            >
-              ⭐
-            </div>
-            <div>
-              <div className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {stats.favoriteCount}
-              </div>
-            </div>
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>Favorites</div>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-              style={{ backgroundColor: 'var(--bg)' }}
-            >
-              🔥
-            </div>
-            <div>
-              <div className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {stats.recentFigures}
-              </div>
-            </div>
-          </div>
-          <div style={{ color: 'var(--text-secondary)' }}>Last 7 days</div>
-        </div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -215,28 +161,32 @@ export function DashboardPage() {
             4Ms Domains
           </h2>
           <div className="space-y-3">
-            {[
-              { icon: '🧠', name: 'Mind', desc: 'Neuroscience & Psychology' },
-              { icon: '⚗️', name: 'Matter', desc: 'Chemistry & Materials' },
-              { icon: '⚡', name: 'Motion', desc: 'Physics & Engineering' },
-              { icon: '📐', name: 'Mathematics', desc: 'Pure & Applied Math' },
-            ].map((domain) => (
-              <div
-                key={domain.name}
-                className="flex items-center gap-3 p-3 rounded-lg"
-                style={{ backgroundColor: 'var(--bg)' }}
-              >
-                <div className="text-2xl">{domain.icon}</div>
-                <div>
-                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {domain.name}
+            {domainKeys.map((key) => {
+              const domain = domainConfig[key];
+              const Icon = domain.icon;
+              return (
+                <div
+                  key={key}
+                  className="flex items-center gap-3 p-3 rounded-lg"
+                  style={{ backgroundColor: 'var(--bg)' }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style={{ backgroundColor: `color-mix(in srgb, ${domain.color} 15%, transparent)` }}
+                  >
+                    <Icon size={20} style={{ color: domain.color }} />
                   </div>
-                  <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    {domain.desc}
+                  <div>
+                    <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {domain.label}
+                    </div>
+                    <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      {domain.description}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

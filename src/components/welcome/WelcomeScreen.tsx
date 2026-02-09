@@ -1,6 +1,15 @@
+import { domainConfig, domainKeys } from '../../lib/domainConfig';
+
 interface WelcomeScreenProps {
   onGetStarted?: () => void;
 }
+
+const domainDescriptions: Record<string, string> = {
+  mind: 'Neuroscience and psychology visualizations for understanding cognition and behavior',
+  matter: 'Chemistry and materials science figures for molecules, reactions, and structures',
+  motion: 'Physics and engineering diagrams for forces, energy, and dynamics',
+  mathematics: 'Mathematical visualizations for pure and applied mathematics',
+};
 
 export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
   return (
@@ -24,65 +33,32 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
-        <div
-          className="p-6 rounded-xl border glass glass-shadow"
-          style={{
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="text-3xl mb-3">🧠</div>
-          <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            Mind
-          </h3>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Neuroscience and psychology visualizations for understanding cognition and behavior
-          </p>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border glass glass-shadow"
-          style={{
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="text-3xl mb-3">⚗️</div>
-          <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            Matter
-          </h3>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Chemistry and materials science figures for molecules, reactions, and structures
-          </p>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border glass glass-shadow"
-          style={{
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="text-3xl mb-3">⚡</div>
-          <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            Motion
-          </h3>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Physics and engineering diagrams for forces, energy, and dynamics
-          </p>
-        </div>
-
-        <div
-          className="p-6 rounded-xl border glass glass-shadow"
-          style={{
-            borderColor: 'var(--border)'
-          }}
-        >
-          <div className="text-3xl mb-3">📐</div>
-          <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            Mathematics
-          </h3>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Mathematical visualizations for pure and applied mathematics
-          </p>
-        </div>
+        {domainKeys.map((key) => {
+          const domain = domainConfig[key];
+          const Icon = domain.icon;
+          return (
+            <div
+              key={key}
+              className="p-6 rounded-xl border glass glass-shadow"
+              style={{
+                borderColor: 'var(--border)'
+              }}
+            >
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-3"
+                style={{ backgroundColor: `color-mix(in srgb, ${domain.color} 15%, transparent)` }}
+              >
+                <Icon size={24} style={{ color: domain.color }} />
+              </div>
+              <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                {domain.label}
+              </h3>
+              <p style={{ color: 'var(--text-secondary)' }}>
+                {domainDescriptions[key]}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
       <div

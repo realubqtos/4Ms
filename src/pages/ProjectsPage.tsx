@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
+import { Folder } from '../components/ui/icons';
+import { domainConfig } from '../lib/domainConfig';
 import type { Database } from '../lib/database.types';
 
 type Project = Database['public']['Tables']['projects']['Row'];
 type Domain = Database['public']['Enums']['domain'];
-
-const domainColors = {
-  mind: 'var(--accent-1)',
-  matter: 'var(--accent-2)',
-  motion: 'var(--accent-3)',
-  mathematics: 'var(--accent-1)',
-};
-
-const domainIcons = {
-  mind: '🧠',
-  matter: '⚗️',
-  motion: '⚡',
-  mathematics: '📐',
-};
 
 export function ProjectsPage() {
   const { user } = useAuth();
@@ -103,22 +91,26 @@ export function ProjectsPage() {
         >
           All ({projects.length})
         </button>
-        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => (
-          <button
-            key={domain}
-            onClick={() => setSelectedDomain(domain)}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
-              selectedDomain === domain ? 'font-medium' : 'opacity-60'
-            }`}
-            style={{
-              backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
-              color: 'var(--text-primary)'
-            }}
-          >
-            <span>{domainIcons[domain]}</span>
-            <span className="capitalize">{domain} ({projectsByDomain[domain].length})</span>
-          </button>
-        ))}
+        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => {
+          const config = domainConfig[domain];
+          const Icon = config.icon;
+          return (
+            <button
+              key={domain}
+              onClick={() => setSelectedDomain(domain)}
+              className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                selectedDomain === domain ? 'font-medium' : 'opacity-60'
+              }`}
+              style={{
+                backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
+                color: 'var(--text-primary)'
+              }}
+            >
+              <Icon size={16} style={{ color: config.color }} />
+              <span className="capitalize">{domain} ({projectsByDomain[domain].length})</span>
+            </button>
+          );
+        })}
       </div>
 
       {filteredProjects.length === 0 ? (
@@ -129,7 +121,9 @@ export function ProjectsPage() {
             borderColor: 'var(--border)'
           }}
         >
-          <div className="text-5xl mb-4">📁</div>
+          <div className="flex justify-center mb-4">
+            <Folder size={48} style={{ color: 'var(--text-tertiary)' }} />
+          </div>
           <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
             No projects yet
           </h3>
@@ -148,54 +142,58 @@ export function ProjectsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              className="p-6 rounded-xl border hover:shadow-lg transition-shadow cursor-pointer"
-              style={{
-                backgroundColor: 'var(--surface)',
-                borderColor: 'var(--border)'
-              }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div
-                  className="text-3xl w-12 h-12 rounded-lg flex items-center justify-center"
-                  style={{
-                    backgroundColor: `${domainColors[project.primary_domain]}20`
-                  }}
-                >
-                  {domainIcons[project.primary_domain]}
-                </div>
-                <span
-                  className="text-xs px-2 py-1 rounded"
-                  style={{
-                    backgroundColor: 'var(--bg)',
-                    color: domainColors[project.primary_domain]
-                  }}
-                >
-                  {project.primary_domain}
-                </span>
-              </div>
-              <h3
-                className="text-lg font-bold mb-2"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                {project.name}
-              </h3>
-              <p
-                className="text-sm mb-4 line-clamp-2"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {project.description || 'No description'}
-              </p>
+          {filteredProjects.map((project) => {
+            const config = domainConfig[project.primary_domain];
+            const DomainIcon = config.icon;
+            return (
               <div
-                className="text-xs"
-                style={{ color: 'var(--text-tertiary)' }}
+                key={project.id}
+                className="p-6 rounded-xl border hover:shadow-lg transition-shadow cursor-pointer"
+                style={{
+                  backgroundColor: 'var(--surface)',
+                  borderColor: 'var(--border)'
+                }}
               >
-                Updated {new Date(project.updated_at).toLocaleDateString()}
+                <div className="flex items-start justify-between mb-4">
+                  <div
+                    className="w-12 h-12 rounded-lg flex items-center justify-center"
+                    style={{
+                      backgroundColor: `color-mix(in srgb, ${config.color} 15%, transparent)`
+                    }}
+                  >
+                    <DomainIcon size={24} style={{ color: config.color }} />
+                  </div>
+                  <span
+                    className="text-xs px-2 py-1 rounded"
+                    style={{
+                      backgroundColor: 'var(--bg)',
+                      color: config.color
+                    }}
+                  >
+                    {project.primary_domain}
+                  </span>
+                </div>
+                <h3
+                  className="text-lg font-bold mb-2"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  {project.name}
+                </h3>
+                <p
+                  className="text-sm mb-4 line-clamp-2"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  {project.description || 'No description'}
+                </p>
+                <div
+                  className="text-xs"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  Updated {new Date(project.updated_at).toLocaleDateString()}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
