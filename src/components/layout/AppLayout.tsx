@@ -10,6 +10,7 @@ import { FiguresPage } from '../../pages/FiguresPage';
 import { AdminDashboardPage } from '../../pages/admin/AdminDashboardPage';
 import { UserManagementPage } from '../../pages/admin/UserManagementPage';
 import { useDiagram } from '../../providers/DiagramProvider';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 
 type Page = 'canvas' | 'dashboard' | 'projects' | 'figures' | 'admin' | 'admin-users';
 
@@ -18,17 +19,39 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ adminPage }: AppLayoutProps = {}) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isAIPanelOpen, setIsAIPanelOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
+  const [isAIPanelOpen, setIsAIPanelOpen] = useState(!isMobile);
   const [currentPage, setCurrentPage] = useState<Page>(adminPage || 'canvas');
   const navigate = useNavigate();
   const { state: diagramState } = useDiagram();
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsSidebarOpen(false);
+      setIsAIPanelOpen(false);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     if (adminPage) {
       setCurrentPage(adminPage);
     }
   }, [adminPage]);
+
+  const handleMenuClick = () => {
+    if (isMobile && !isSidebarOpen && isAIPanelOpen) {
+      setIsAIPanelOpen(false);
+    }
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleAIPanelToggle = () => {
+    if (isMobile && !isAIPanelOpen && isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+    setIsAIPanelOpen(!isAIPanelOpen);
+  };
 
   const handleNavigate = (page: string) => {
     if (page === 'admin') {
@@ -65,10 +88,12 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
     }
   };
 
+  const mainMarginRight = isMobile ? '0' : isAIPanelOpen ? '440px' : '0';
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <Header
-        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        onMenuClick={handleMenuClick}
         isSidebarOpen={isSidebarOpen}
       />
       <div className="flex relative">
@@ -76,19 +101,20 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
           isOpen={isSidebarOpen}
           currentPage={currentPage}
           onNavigate={handleNavigate}
+          onClose={() => setIsSidebarOpen(false)}
         />
         <main
-          className="flex-1 p-8 transition-all duration-300"
+          className="flex-1 p-4 md:p-8 transition-all duration-300"
           style={{
             color: 'var(--text-primary)',
-            marginRight: isAIPanelOpen ? '440px' : '0'
+            marginRight: mainMarginRight
           }}
         >
           {renderPage()}
         </main>
         <AIChatPanel
           isOpen={isAIPanelOpen}
-          onToggle={() => setIsAIPanelOpen(!isAIPanelOpen)}
+          onToggle={handleAIPanelToggle}
         />
       </div>
     </div>

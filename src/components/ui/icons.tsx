@@ -31,4 +31,6 @@ export {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Newspaper,
+  Info,
 } from 'lucide-react';

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Paperclip, Send, ChevronRight } from '../ui/icons';
+import { MessageSquare, Paperclip, Send, ChevronRight, X } from '../ui/icons';
 import { useDiagram } from '../../providers/DiagramProvider';
 import { useAuth } from '../../providers/AuthProvider';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 
 interface Message {
   id: string;
@@ -22,6 +23,7 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { generateDiagram, state: diagramState } = useDiagram();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,6 +32,15 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobile, isOpen]);
 
   useEffect(() => {
     if (!diagramState.isGenerating && messages.length > 0) {
@@ -131,17 +142,19 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
     }
   };
 
+  const panelStyle = isMobile
+    ? { width: '100%', height: 'calc(100vh - 57px)', borderLeft: 'none' }
+    : { width: '360px', height: '600px', borderLeft: '1px solid var(--border)' };
+
+  const panelTop = isMobile ? 'top-[57px]' : 'top-[73px]';
+
   return (
     <>
       <div
-        className={`fixed right-0 top-[57px] transition-transform duration-300 ease-in-out z-40 glass glass-shadow-lg ${
+        className={`fixed right-0 ${panelTop} transition-transform duration-300 ease-in-out z-40 glass glass-shadow-lg ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{
-          width: '360px',
-          height: '600px',
-          borderLeft: '1px solid var(--border)'
-        }}
+        style={panelStyle}
       >
         <div className="flex flex-col h-full">
           <div
@@ -175,7 +188,11 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               aria-label="Close AI panel"
             >
-              <ChevronRight size={20} style={{ color: 'var(--text-primary)' }} />
+              {isMobile ? (
+                <X size={20} style={{ color: 'var(--text-primary)' }} />
+              ) : (
+                <ChevronRight size={20} style={{ color: 'var(--text-primary)' }} />
+              )}
             </button>
           </div>
 
@@ -196,45 +213,27 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
                 <div className="mt-4 space-y-2">
                   <button
                     className="w-full text-left px-3 py-2 rounded-md text-xs transition-all glass glass-shadow glass-hover"
-                    style={{
-                      color: 'var(--text-secondary)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--text-secondary)';
-                    }}
+                    style={{ color: 'var(--text-secondary)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                     onClick={() => setInput('Create a molecular diagram of caffeine')}
                   >
                     Create a molecular diagram of caffeine
                   </button>
                   <button
                     className="w-full text-left px-3 py-2 rounded-md text-xs transition-all glass glass-shadow glass-hover"
-                    style={{
-                      color: 'var(--text-secondary)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--text-secondary)';
-                    }}
+                    style={{ color: 'var(--text-secondary)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                     onClick={() => setInput('Generate a force diagram for projectile motion')}
                   >
                     Generate a force diagram for projectile motion
                   </button>
                   <button
                     className="w-full text-left px-3 py-2 rounded-md text-xs transition-all glass glass-shadow glass-hover"
-                    style={{
-                      color: 'var(--text-secondary)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--text-secondary)';
-                    }}
+                    style={{ color: 'var(--text-secondary)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                     onClick={() => setInput('Visualize a neural network architecture')}
                   >
                     Visualize a neural network architecture
@@ -274,24 +273,15 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
                   <div className="flex gap-1">
                     <div
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{
-                        backgroundColor: 'var(--text-tertiary)',
-                        animationDelay: '0ms'
-                      }}
+                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '0ms' }}
                     />
                     <div
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{
-                        backgroundColor: 'var(--text-tertiary)',
-                        animationDelay: '150ms'
-                      }}
+                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '150ms' }}
                     />
                     <div
                       className="w-2 h-2 rounded-full animate-bounce"
-                      style={{
-                        backgroundColor: 'var(--text-tertiary)',
-                        animationDelay: '300ms'
-                      }}
+                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '300ms' }}
                     />
                   </div>
                   <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>

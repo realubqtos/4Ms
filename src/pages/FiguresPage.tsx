@@ -66,16 +66,16 @@ export function FiguresPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Figure Library
           </h1>
           <p className="mt-2" style={{ color: 'var(--text-secondary)' }}>
             Browse and manage your scientific visualizations
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 self-start sm:self-auto">
           <div
             className="flex items-center gap-2 p-1 rounded-lg"
             style={{ backgroundColor: 'var(--surface)' }}
@@ -117,7 +117,7 @@ export function FiguresPage() {
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         <button
           onClick={() => setSelectedDomain('all')}
           className={`px-4 py-2 rounded-lg transition-all ${

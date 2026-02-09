@@ -70,9 +70,9 @@ export function ProjectsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             My Projects
           </h1>
           <p className="mt-2" style={{ color: 'var(--text-secondary)' }}>
@@ -80,7 +80,7 @@ export function ProjectsPage() {
           </p>
         </div>
         <button
-          className="px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
+          className="px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity self-start sm:self-auto"
           style={{
             backgroundColor: 'var(--accent-1)',
             color: 'var(--bg)'
@@ -90,7 +90,7 @@ export function ProjectsPage() {
         </button>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         <button
           onClick={() => setSelectedDomain('all')}
           className={`px-4 py-2 rounded-lg transition-all ${

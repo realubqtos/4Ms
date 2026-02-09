@@ -43,12 +43,12 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
             <div className="flex flex-col">
               <h1 className="text-lg font-semibold leading-tight" style={{ color: 'var(--text-primary)' }}>
                 4Ms{' '}
-                <span style={{ color: 'var(--text-tertiary)', fontWeight: 'normal' }}>
+                <span className="hidden sm:inline" style={{ color: 'var(--text-tertiary)', fontWeight: 'normal' }}>
                   /fɔːrmz/
                 </span>
               </h1>
               <p
-                className="text-[10px] leading-tight tracking-wide"
+                className="text-[10px] leading-tight tracking-wide hidden sm:block"
                 style={{ color: 'var(--text-secondary)' }}
               >
                 mind | mathematics | motion | matter | +science
@@ -56,10 +56,10 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {isAdmin && (
             <div
-              className="px-3 py-1 rounded-md text-xs font-medium"
+              className="px-2 sm:px-3 py-1 rounded-md text-xs font-medium"
               style={{
                 backgroundColor: 'var(--accent-3)',
                 color: '#FFFFFF',
@@ -68,34 +68,6 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
               Admin
             </div>
           )}
-          <button
-            className="px-3 py-1 rounded-md text-xs font-medium transition-all glass glass-shadow glass-hover"
-            style={{
-              color: 'var(--text-primary)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--surface-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '';
-            }}
-          >
-            Blog
-          </button>
-          <button
-            className="px-3 py-1 rounded-md text-xs font-medium transition-all glass glass-shadow glass-hover"
-            style={{
-              color: 'var(--text-primary)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--surface-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '';
-            }}
-          >
-            About
-          </button>
           <ThemeToggle />
         </div>
       </div>

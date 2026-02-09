@@ -15,15 +15,15 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
         >
           4Ms
         </div>
-        <h1 className="text-5xl font-bold" style={{ color: 'var(--text-primary)' }}>
+        <h1 className="text-3xl sm:text-5xl font-bold" style={{ color: 'var(--text-primary)' }}>
           Welcome to 4Ms
         </h1>
-        <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-base sm:text-xl" style={{ color: 'var(--text-secondary)' }}>
           mind | mathematics | motion | matter | science
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mt-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
         <div
           className="p-6 rounded-xl border glass glass-shadow"
           style={{
@@ -86,7 +86,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
       </div>
 
       <div
-        className="mt-12 p-8 rounded-xl border text-center glass glass-shadow-lg"
+        className="mt-8 sm:mt-12 p-4 sm:p-8 rounded-xl border text-center glass glass-shadow-lg"
         style={{
           borderColor: 'var(--border)'
         }}
