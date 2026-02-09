@@ -1,6 +1,6 @@
 # 4Ms - Scientific Visualization Platform
 
-**Visualizations for mind, matter, motion, mathematics + science**
+**Generate diagrams and visualizations for mind, matter, motion, mathematics + science**
 
 4Ms is a sophisticated academic figure generation platform designed to help researchers create publication-ready visualizations through natural language conversations. The platform serves four scientific domains: Mind (neuroscience, psychology), Matter (chemistry, materials science), Motion (physics, engineering), and Mathematics.
 
