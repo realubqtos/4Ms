@@ -46,7 +46,7 @@ export function useDiagramGeneration() {
       });
 
       try {
-        const apiUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+        const apiUrl = import.meta.env.VITE_BACKEND_URL || '';
         const response = await fetch(`${apiUrl}/api/figures/generate-stream`, {
           method: 'POST',
           headers: {

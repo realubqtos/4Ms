@@ -25,8 +25,8 @@ app.add_middleware(
 )
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")
-supabase_url = os.getenv("VITE_SUPABASE_URL")
-supabase_key = os.getenv("VITE_SUPABASE_ANON_KEY")
+supabase_url = os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_ANON_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
 
 if gemini_api_key:
     genai.configure(api_key=gemini_api_key)
