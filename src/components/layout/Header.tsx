@@ -41,8 +41,10 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
               4M
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-semibold leading-tight" style={{ color: 'var(--text-primary)' }}>
-                4Ms{' '}
+              <h1 className="text-lg leading-tight" style={{ color: 'var(--text-primary)' }}>
+                <span style={{ fontFamily: 'Ojuju, sans-serif', fontWeight: 800, fontOpticalSizing: 'auto' }}>
+                  4Ms
+                </span>{' '}
                 <span className="hidden sm:inline" style={{ color: 'var(--text-tertiary)', fontWeight: 'normal' }}>
                   /fɔːrmz/
                 </span>
