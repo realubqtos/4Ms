@@ -34,7 +34,7 @@ export {
   Newspaper,
   Info,
   Brain,
-  Zap,
+  Waves,
   Star,
   Flame,
   BarChart3,

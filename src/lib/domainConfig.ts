@@ -1,4 +1,4 @@
-import { Brain, FlaskConical, Zap, Ruler } from '../components/ui/icons';
+import { Brain, FlaskConical, Waves, Ruler } from '../components/ui/icons';
 import type { LucideIcon } from 'lucide-react';
 
 export interface DomainEntry {
@@ -22,7 +22,7 @@ export const domainConfig: Record<string, DomainEntry> = {
     description: 'Chemistry & Materials',
   },
   motion: {
-    icon: Zap,
+    icon: Waves,
     color: 'var(--accent-3)',
     label: 'Motion',
     description: 'Physics & Engineering',
