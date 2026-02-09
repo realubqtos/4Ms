@@ -54,6 +54,18 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
   };
 
   const handleNavigate = (page: string) => {
+    // Toggle behavior: clicking active item returns to canvas
+    if (currentPage === page && page !== 'canvas') {
+      // For admin pages, navigate back to main route
+      if (page === 'admin' || page === 'admin-users') {
+        navigate('/');
+      } else {
+        setCurrentPage('canvas');
+      }
+      if (isMobile) setIsSidebarOpen(false);
+      return;
+    }
+
     if (page === 'admin') {
       navigate('/admin');
     } else if (page === 'admin-users') {
