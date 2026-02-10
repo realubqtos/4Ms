@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Palette, Star } from '../components/ui/icons';
-import { domainConfig } from '../lib/domainConfig';
+import { domainConfig, type DomainKey } from '../lib/domainConfig';
 import type { Database } from '../lib/database.types';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
@@ -185,7 +185,7 @@ export function FiguresPage() {
           : 'space-y-4'
         }>
           {filteredFigures.map((figure) => {
-            const config = domainConfig[figure.domain];
+            const config = domainConfig[figure.domain as DomainKey];
             const DomainIcon = config.icon;
             return (
               <div
