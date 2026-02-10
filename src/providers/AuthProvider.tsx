@@ -38,9 +38,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateLastLogin = async (userId: string) => {
-    await supabase
+    await (supabase
       .from('profiles')
-      .update({ last_login_at: new Date().toISOString() })
+      .update as any)({ last_login_at: new Date().toISOString() })
       .eq('id', userId);
   };
 
@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!error && data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({
+      const { error: profileError } = await (supabase.from('profiles').insert as any)({
         id: data.user.id,
         email: data.user.email!,
         full_name: fullName || null,
