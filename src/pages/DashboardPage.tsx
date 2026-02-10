@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder, Palette, Star, Flame } from '../components/ui/icons';
-import { domainConfig, domainKeys } from '../lib/domainConfig';
+import { domainConfig, domainKeys, type DomainKey } from '../lib/domainConfig';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -161,7 +161,7 @@ export function DashboardPage() {
             4Ms Domains
           </h2>
           <div className="space-y-3">
-            {domainKeys.map((key) => {
+            {domainKeys.map((key: DomainKey) => {
               const domain = domainConfig[key];
               const Icon = domain.icon;
               return (
