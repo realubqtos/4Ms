@@ -1,4 +1,4 @@
-import { domainConfig, domainKeys, type DomainKey } from '../../lib/domainConfig';
+import { domainConfig, domainKeys } from '../../lib/domainConfig';
 
 interface WelcomeScreenProps {
   onGetStarted?: () => void;
@@ -33,7 +33,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
-        {domainKeys.map((key: DomainKey) => {
+        {domainKeys.map((key) => {
           const domain = domainConfig[key];
           const Icon = domain.icon;
           return (

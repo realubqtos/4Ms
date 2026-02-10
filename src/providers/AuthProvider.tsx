@@ -38,9 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateLastLogin = async (userId: string) => {
-    await (supabase
+    await supabase
       .from('profiles')
-      .update as any)({ last_login_at: new Date().toISOString() })
+      // @ts-expect-error - Database types are correct at runtime
+      .update({ last_login_at: new Date().toISOString() })
       .eq('id', userId);
   };
 
@@ -80,12 +81,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!error && data.user) {
-      const { error: profileError } = await (supabase.from('profiles').insert as any)({
+      const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
         email: data.user.email!,
         full_name: fullName || null,
-        theme_preference: 'night',
-      });
+        theme_preference: 'night' as const,
+      } as any);
 
       if (profileError) {
         console.error('Error creating profile:', profileError);

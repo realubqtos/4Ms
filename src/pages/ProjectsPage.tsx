@@ -41,7 +41,7 @@ export function ProjectsPage() {
     ? projects
     : projects.filter(p => p.primary_domain === selectedDomain);
 
-  const projectsByDomain: Record<Domain, Project[]> = {
+  const projectsByDomain = {
     mind: projects.filter(p => p.primary_domain === 'mind'),
     matter: projects.filter(p => p.primary_domain === 'matter'),
     motion: projects.filter(p => p.primary_domain === 'motion'),
@@ -143,7 +143,7 @@ export function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
-            const config = domainConfig[project.primary_domain as Domain];
+            const config = domainConfig[project.primary_domain];
             const DomainIcon = config.icon;
             return (
               <div

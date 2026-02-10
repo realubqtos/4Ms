@@ -51,9 +51,10 @@ export function UserManagementPage() {
 
     setActionLoading(true);
     try {
-      const { error: updateError } = await (supabase
+      const { error: updateError } = await supabase
         .from('profiles')
-        .update as any)({
+        // @ts-expect-error - Database types are correct at runtime
+        .update({
           is_admin: !currentIsAdmin,
           role: !currentIsAdmin ? 'admin' : 'user',
         })
