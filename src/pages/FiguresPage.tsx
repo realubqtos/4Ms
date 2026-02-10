@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Palette, Star } from '../components/ui/icons';
-import { domainConfig } from '../lib/domainConfig';
+import { domainConfig, type Domain } from '../lib/domainConfig';
 import type { Database } from '../lib/database.types';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
-type Domain = Database['public']['Enums']['domain'];
 
 export function FiguresPage() {
   const { user } = useAuth();
@@ -185,7 +184,7 @@ export function FiguresPage() {
           : 'space-y-4'
         }>
           {filteredFigures.map((figure) => {
-            const config = domainConfig[figure.domain];
+            const config = domainConfig[figure.domain as Domain];
             const DomainIcon = config.icon;
             return (
               <div

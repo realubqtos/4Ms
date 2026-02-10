@@ -12,7 +12,7 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
 
   return (
     <header
-      className="sticky top-0 z-50 glass glass-shadow"
+      className="sticky top-8 z-50 glass glass-shadow"
       style={{
         borderBottom: '1px solid var(--border)',
         padding: '0.75rem 1rem'

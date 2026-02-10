@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder } from '../components/ui/icons';
-import { domainConfig } from '../lib/domainConfig';
+import { domainConfig, type Domain } from '../lib/domainConfig';
 import type { Database } from '../lib/database.types';
 
 type Project = Database['public']['Tables']['projects']['Row'];
-type Domain = Database['public']['Enums']['domain'];
 
 export function ProjectsPage() {
   const { user } = useAuth();
@@ -107,7 +106,7 @@ export function ProjectsPage() {
               }}
             >
               <Icon size={16} style={{ color: config.color }} />
-              <span className="capitalize">{domain} ({projectsByDomain[domain].length})</span>
+              <span className="capitalize">{domain} ({(projectsByDomain as Record<Domain, Project[]>)[domain].length})</span>
             </button>
           );
         })}
@@ -143,7 +142,7 @@ export function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
-            const config = domainConfig[project.primary_domain];
+            const config = domainConfig[project.primary_domain as Domain];
             const DomainIcon = config.icon;
             return (
               <div

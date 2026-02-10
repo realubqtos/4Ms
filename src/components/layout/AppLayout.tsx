@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
+import { StatusBar } from './StatusBar';
 import { Header } from './Header';
 import { DiagramCanvas } from '../canvas/DiagramCanvas';
 import { AIChatPanel } from '../chat/AIChatPanel';
@@ -104,6 +105,7 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+      <StatusBar />
       <Header
         onMenuClick={handleMenuClick}
         isSidebarOpen={isSidebarOpen}
