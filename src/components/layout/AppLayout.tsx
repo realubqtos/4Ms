@@ -101,7 +101,7 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
     }
   };
 
-  const mainMarginRight = isMobile ? '0' : isAIPanelOpen ? '440px' : '0';
+  const mainPaddingBottom = isAIPanelOpen ? (isMobile ? '256px' : '316px') : '0';
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
@@ -121,7 +121,7 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
           className="flex-1 p-4 md:p-8 transition-all duration-300"
           style={{
             color: 'var(--text-primary)',
-            marginRight: mainMarginRight
+            paddingBottom: mainPaddingBottom
           }}
         >
           {renderPage()}

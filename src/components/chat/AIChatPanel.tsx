@@ -143,16 +143,14 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
   };
 
   const panelStyle = isMobile
-    ? { width: '100%', height: 'calc(100vh - 57px)', borderLeft: 'none' }
-    : { width: '360px', height: 'calc(100vh - 96px)', borderLeft: '1px solid var(--border)' };
-
-  const panelTop = isMobile ? 'top-[57px]' : 'top-[96px]';
+    ? { height: '240px', borderTop: '1px solid var(--border)' }
+    : { height: '300px', borderTop: '1px solid var(--border)' };
 
   return (
     <>
       <div
-        className={`fixed right-0 ${panelTop} transition-transform duration-300 ease-in-out z-40 glass glass-shadow-lg ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed bottom-0 left-0 right-0 transition-transform duration-300 ease-in-out z-40 glass glass-shadow-lg ${
+          isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={panelStyle}
       >
@@ -350,7 +348,7 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="fixed right-0 bottom-8 p-3 rounded-l-lg shadow-lg transition-all z-40 glass-shadow-xl"
+          className="fixed right-6 bottom-6 p-3 rounded-lg shadow-lg transition-all z-40 glass-shadow-xl"
           style={{
             backgroundColor: 'var(--accent-1)',
             color: '#FFFFFF'
