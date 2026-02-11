@@ -38,13 +38,13 @@ export function ProjectsPage() {
 
   const filteredProjects = selectedDomain === 'all'
     ? projects
-    : projects.filter(p => p.domain === selectedDomain);
+    : projects.filter(p => p.primary_domain === selectedDomain);
 
   const projectsByDomain = {
-    mind: projects.filter(p => p.domain === 'mind'),
-    matter: projects.filter(p => p.domain === 'matter'),
-    motion: projects.filter(p => p.domain === 'motion'),
-    mathematics: projects.filter(p => p.domain === 'mathematics'),
+    mind: projects.filter(p => p.primary_domain === 'mind'),
+    matter: projects.filter(p => p.primary_domain === 'matter'),
+    motion: projects.filter(p => p.primary_domain === 'motion'),
+    mathematics: projects.filter(p => p.primary_domain === 'mathematics'),
   };
 
   if (loading) {
@@ -142,7 +142,7 @@ export function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
-            const config = domainConfig[project.domain as Domain];
+            const config = domainConfig[project.primary_domain as Domain];
             const DomainIcon = config.icon;
             return (
               <div
@@ -169,7 +169,7 @@ export function ProjectsPage() {
                       color: config.color
                     }}
                   >
-                    {project.domain}
+                    {project.primary_domain}
                   </span>
                 </div>
                 <h3
