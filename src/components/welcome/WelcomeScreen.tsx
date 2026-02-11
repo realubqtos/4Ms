@@ -33,7 +33,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
-        {domainKeys.map((key) => {
+        {domainKeys.map((key: string) => {
           const domain = domainConfig[key];
           const Icon = domain.icon;
           return (
