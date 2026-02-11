@@ -5,14 +5,14 @@ aiofiles==23.2.1
 pydantic==2.10.4
 pydantic-settings==2.7.1
 python-dotenv==1.0.0
-google-generativeai==0.3.2
+google-generativeai==0.8.0
 pillow==11.1.0
 matplotlib==3.10.1
 numpy==2.2.3
 pandas==2.2.3
-pydantic-ai==0.0.20
 plotly==5.18.0
 networkx==3.2.1
 openpyxl==3.1.2
 sse-starlette==2.0.0
 supabase==2.15.2
+paperbanana>=0.1.0

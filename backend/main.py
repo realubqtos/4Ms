@@ -10,6 +10,13 @@ import io
 from dotenv import load_dotenv
 import google.generativeai as genai
 from supabase import create_client, Client
+
+try:
+    from agents.paperbanana_orchestrator import PaperBananaOrchestrator, PAPERBANANA_AVAILABLE
+except ImportError:
+    PAPERBANANA_AVAILABLE = False
+    PaperBananaOrchestrator = None
+
 from agents.orchestrator import DiagramOrchestrator
 
 load_dotenv()
@@ -24,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
+gemini_api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 supabase_url = os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")
 supabase_key = os.getenv("SUPABASE_ANON_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
 
@@ -36,7 +43,11 @@ if supabase_url and supabase_key:
     supabase = create_client(supabase_url, supabase_key)
 
 orchestrator = None
+paperbanana_orchestrator = None
+
 if supabase and gemini_api_key:
+    if PAPERBANANA_AVAILABLE and PaperBananaOrchestrator:
+        paperbanana_orchestrator = PaperBananaOrchestrator(supabase)
     orchestrator = DiagramOrchestrator(supabase)
 
 
@@ -69,7 +80,9 @@ async def health_check():
         "status": "healthy",
         "gemini_configured": gemini_api_key is not None,
         "supabase_configured": supabase is not None,
-        "orchestrator_ready": orchestrator is not None
+        "orchestrator_ready": orchestrator is not None,
+        "paperbanana_available": PAPERBANANA_AVAILABLE,
+        "paperbanana_ready": paperbanana_orchestrator is not None
     }
 
 
@@ -220,17 +233,70 @@ class StreamingDiagramRequest(BaseModel):
     data_info: Optional[dict] = None
 
 
+class StreamingDiagramRequestV2(BaseModel):
+    prompt: str
+    type: str
+    domain: str
+    user_id: str
+    project_id: Optional[str] = None
+    data_info: Optional[dict] = None
+    use_paperbanana: Optional[bool] = True
+
+
 @app.post("/api/figures/generate-stream")
 async def generate_figure_stream(request: StreamingDiagramRequest):
-    if not orchestrator:
+    active_orchestrator = paperbanana_orchestrator if paperbanana_orchestrator else orchestrator
+
+    if not active_orchestrator:
         raise HTTPException(
             status_code=500,
-            detail="Orchestrator not initialized. Check API keys configuration."
+            detail="No orchestrator available. Check API keys configuration."
         )
 
     async def event_generator():
         try:
-            async for event in orchestrator.generate_diagram(
+            async for event in active_orchestrator.generate_diagram(
+                prompt=request.prompt,
+                diagram_type=request.type,
+                domain=request.domain,
+                user_id=request.user_id,
+                project_id=request.project_id,
+                data_info=request.data_info
+            ):
+                yield f"data: {json.dumps(event)}\n\n"
+        except Exception as e:
+            error_event = {
+                'type': 'error',
+                'data': {'message': str(e)}
+            }
+            yield f"data: {json.dumps(error_event)}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
+@app.post("/api/figures/generate-stream-v2")
+async def generate_figure_stream_v2(request: StreamingDiagramRequestV2):
+    if request.use_paperbanana and paperbanana_orchestrator:
+        active_orchestrator = paperbanana_orchestrator
+    elif orchestrator:
+        active_orchestrator = orchestrator
+    else:
+        raise HTTPException(
+            status_code=500,
+            detail="No orchestrator available. Check API keys configuration."
+        )
+
+    async def event_generator():
+        try:
+            async for event in active_orchestrator.generate_diagram(
                 prompt=request.prompt,
                 diagram_type=request.type,
                 domain=request.domain,
