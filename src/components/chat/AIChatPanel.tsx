@@ -205,7 +205,7 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
                   <MessageSquare size={24} style={{ color: 'var(--text-tertiary)' }} />
                 </div>
                 <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
-                  Start a conversation
+                  Spark a conversation
                 </h3>
                 <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                   Upload a file or describe the visualization you want to create
