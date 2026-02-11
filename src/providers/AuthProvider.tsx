@@ -38,9 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateLastLogin = async (userId: string) => {
-    await supabase
-      .from('profiles')
-      // @ts-expect-error - Database types are correct at runtime
+    await (supabase
+      .from('profiles') as any)
       .update({ last_login_at: new Date().toISOString() })
       .eq('id', userId);
   };
