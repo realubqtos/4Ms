@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder, Palette, Star, Flame } from '../components/ui/icons';
-import { domainConfig, domains, type Domain } from '../lib/domainConfig';
+import { domainConfig, domains } from '../lib/domainConfig';
 import type { Database } from '../lib/databases.types';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
@@ -164,7 +164,7 @@ export function DashboardPage() {
             4Ms Domains
           </h2>
           <div className="space-y-3">
-            {domains.filter((d): d is Exclude<Domain, 'general'> => d !== 'general').map((key) => {
+            {domains.map((key) => {
               const domain = domainConfig[key];
               const Icon = domain.icon;
               return (
