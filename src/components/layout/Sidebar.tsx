@@ -49,14 +49,14 @@ export function Sidebar({ isOpen, currentPage, onNavigate, onClose }: SidebarPro
           className={`fixed inset-0 z-40 bg-black transition-opacity duration-300 ${
             isOpen ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
-          style={{ top: '57px' }}
+          style={{ top: '65px' }}
           onClick={onClose}
         />
         <aside
           className={`fixed inset-y-0 left-0 z-50 w-full flex flex-col glass transition-transform duration-300 ease-in-out ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
-          style={{ top: '57px', borderRight: '1px solid var(--border)' }}
+          style={{ top: '65px', borderRight: '1px solid var(--border)' }}
         >
           <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
             <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Menu</span>
@@ -93,12 +93,12 @@ export function Sidebar({ isOpen, currentPage, onNavigate, onClose }: SidebarPro
     );
   }
 
-  if (!isOpen) return null;
-
   return (
     <aside
-      className="w-56 border-r min-h-[calc(100vh-57px)] transition-all duration-300 glass flex flex-col"
-      style={{ borderColor: 'var(--border)' }}
+      className={`fixed left-0 w-56 border-r min-h-[calc(100vh-65px)] flex flex-col glass transition-transform duration-300 ease-in-out z-30 ${
+        isOpen ? 'translate-x-0' : '-translate-x-56'
+      }`}
+      style={{ top: '65px', borderColor: 'var(--border)' }}
     >
       <nav className="p-4 space-y-6 flex-1">
         <SidebarNavSection

@@ -143,10 +143,10 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
   };
 
   const panelStyle = isMobile
-    ? { width: '100%', height: 'calc(100vh - 57px)', borderLeft: 'none' }
-    : { width: '360px', height: 'calc(100vh - 96px)', borderLeft: '1px solid var(--border)' };
+    ? { width: '100%', height: 'calc(100vh - 65px)', borderLeft: 'none' }
+    : { width: '360px', height: 'calc(100vh - 140px)', borderLeft: '1px solid var(--border)' };
 
-  const panelTop = isMobile ? 'top-[57px]' : 'top-[96px]';
+  const panelTop = isMobile ? 'top-[65px]' : 'top-[140px]';
 
   return (
     <>
@@ -350,7 +350,9 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="fixed right-0 bottom-8 p-3 rounded-l-lg shadow-lg transition-all z-40 glass-shadow-xl"
+          className={`fixed right-0 p-3 rounded-l-lg shadow-lg transition-all z-40 glass-shadow-xl ${
+            isMobile ? 'bottom-8' : 'bottom-6'
+          }`}
           style={{
             backgroundColor: 'var(--accent-1)',
             color: '#FFFFFF'
