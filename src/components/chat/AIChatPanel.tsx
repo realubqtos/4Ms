@@ -144,9 +144,9 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
 
   const panelStyle = isMobile
     ? { width: '100%', height: 'calc(100vh - 57px)', borderLeft: 'none' }
-    : { width: '360px', height: '600px', borderLeft: '1px solid var(--border)' };
+    : { width: '360px', height: 'calc(100vh - 96px)', borderLeft: '1px solid var(--border)' };
 
-  const panelTop = isMobile ? 'top-[57px]' : 'top-[73px]';
+  const panelTop = isMobile ? 'top-[57px]' : 'top-[96px]';
 
   return (
     <>
