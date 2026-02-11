@@ -7,6 +7,7 @@ import os
 import json
 import pandas as pd
 import io
+from pathlib import Path
 from dotenv import load_dotenv
 import google.generativeai as genai
 from supabase import create_client, Client
@@ -19,7 +20,9 @@ except ImportError:
 
 from agents.orchestrator import DiagramOrchestrator
 
-load_dotenv()
+root_env = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(root_env)
+load_dotenv(override=False)
 
 app = FastAPI(title="4Ms API", version="1.0.0")
 

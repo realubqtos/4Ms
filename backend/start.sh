@@ -6,16 +6,11 @@ export PATH="/home/appuser/.local/bin:$PATH"
 # Change to backend directory
 cd "$(dirname "$0")"
 
-# Load environment variables
+# Load environment variables (prefer backend/.env, fall back to root .env)
 if [ -f .env ]; then
     export $(cat .env | grep -v '^#' | xargs)
-fi
-
-# Check if GEMINI_API_KEY is set
-if [ "$GEMINI_API_KEY" = "your_gemini_api_key_here" ]; then
-    echo "⚠️  WARNING: GEMINI_API_KEY is not configured!"
-    echo "Please edit backend/.env and add your actual Gemini API key"
-    echo ""
+elif [ -f ../.env ]; then
+    export $(cat ../.env | grep -v '^#' | xargs)
 fi
 
 echo "🚀 Starting 4Ms Backend API on port ${PORT:-8001}..."
