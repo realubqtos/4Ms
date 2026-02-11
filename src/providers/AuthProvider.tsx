@@ -31,15 +31,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (!error && data) {
-      setIsAdmin((data as any).is_admin);
+      setIsAdmin(data.is_admin);
     } else {
       setIsAdmin(false);
     }
   };
 
   const updateLastLogin = async (userId: string) => {
-    await (supabase
-      .from('profiles') as any)
+    await supabase
+      .from('profiles')
       .update({ last_login_at: new Date().toISOString() })
       .eq('id', userId);
   };
@@ -84,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: data.user.id,
         email: data.user.email!,
         full_name: fullName || null,
-        theme_preference: 'night' as const,
-      } as any);
+        theme_preference: 'night',
+      });
 
       if (profileError) {
         console.error('Error creating profile:', profileError);
@@ -107,19 +107,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
-  const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    return { error };
-  };
-
   const sendPasswordResetEmail = async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     return { error };
   };
+
+  const resetPassword = sendPasswordResetEmail;
 
   const updatePassword = async (newPassword: string) => {
     const { error } = await supabase.auth.updateUser({

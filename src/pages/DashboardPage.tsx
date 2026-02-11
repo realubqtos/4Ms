@@ -27,16 +27,16 @@ export function DashboardPage() {
         supabase.from('figures').select('*').eq('user_id', user.id),
       ]);
 
-      const figures = (figuresResult.data || []) as any[];
+      const figures = figuresResult.data || [];
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
       setStats({
         projectCount: projectsResult.count || 0,
         figureCount: figures.length,
-        favoriteCount: figures.filter((f: any) => f.is_favorite).length,
+        favoriteCount: figures.filter((f) => f.is_favorite).length,
         recentFigures: figures.filter(
-          (f: any) => new Date(f.created_at) > sevenDaysAgo
+          (f) => new Date(f.created_at) > sevenDaysAgo
         ).length,
       });
     } catch (error) {

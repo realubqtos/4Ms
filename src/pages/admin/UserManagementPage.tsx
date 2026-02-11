@@ -51,25 +51,13 @@ export function UserManagementPage() {
 
     setActionLoading(true);
     try {
-      const updates = {
-        is_admin: !currentIsAdmin,
-        role: (!currentIsAdmin ? 'admin' : 'user') as 'admin' | 'user',
-      };
-      const { error: updateError } = await (supabase
-        .from('profiles') as any)
-        .update(updates)
-        .eq('id', userId);
+      const { error: updateError } = await supabase.rpc('admin_update_user_role', {
+        target_user_id: userId,
+        new_role: currentIsAdmin ? 'user' : 'admin',
+        new_is_admin: !currentIsAdmin,
+      });
 
       if (updateError) throw updateError;
-
-      const { error: auditError } = await supabase.from('admin_audit_log').insert({
-        admin_id: currentUser?.id,
-        action: currentIsAdmin ? 'demote_from_admin' : 'promote_to_admin',
-        target_user_id: userId,
-        details: { previous_role: currentIsAdmin ? 'admin' : 'user' },
-      } as any);
-
-      if (auditError) console.error('Audit log error:', auditError);
 
       await loadUsers();
       alert(`Admin status ${currentIsAdmin ? 'removed' : 'granted'} successfully`);
@@ -91,14 +79,16 @@ export function UserManagementPage() {
       const { error } = await sendPasswordResetEmail(email);
       if (error) throw error;
 
-      const { error: auditError } = await supabase.from('admin_audit_log').insert({
-        admin_id: currentUser?.id,
-        action: 'send_password_reset',
-        target_user_id: userId,
-        details: { email },
-      } as any);
+      if (currentUser) {
+        const { error: auditError } = await supabase.from('admin_audit_log').insert({
+          admin_id: currentUser.id,
+          action: 'send_password_reset',
+          target_user_id: userId,
+          details: { email },
+        });
 
-      if (auditError) console.error('Audit log error:', auditError);
+        if (auditError) console.error('Audit log error:', auditError);
+      }
 
       alert('Password reset email sent successfully');
     } catch (error) {

@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { Settings, LogOut } from '../ui/icons';
 import { useAuth } from '../../providers/AuthProvider';
 import { supabase } from '../../lib/supabase';
+import type { Database } from '../../lib/database.types';
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export function SidebarFooter() {
   const { user, signOut } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
