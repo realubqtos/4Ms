@@ -33,6 +33,7 @@ export {
   Maximize2,
   Newspaper,
   Info,
+  Atom,
   Brain,
   Waves,
   Star,
