@@ -40,4 +40,9 @@ export {
   Flame,
   BarChart3,
   Library,
+  Layers,
+  Dna,
+  Zap,
+  Calculator,
+  Grid,
 } from 'lucide-react';

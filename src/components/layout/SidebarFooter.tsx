@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Settings, LogOut } from '../ui/icons';
 import { useAuth } from '../../providers/AuthProvider';
 import { supabase } from '../../lib/supabase';
-import type { Database } from '../../lib/database.types';
+import type { Database } from '../../lib/databases.types';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

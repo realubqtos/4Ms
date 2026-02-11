@@ -31,15 +31,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (!error && data) {
-      setIsAdmin(data.is_admin);
+      setIsAdmin((data as { is_admin: boolean }).is_admin);
     } else {
       setIsAdmin(false);
     }
   };
 
   const updateLastLogin = async (userId: string) => {
-    await supabase
-      .from('profiles')
+    await (supabase
+      .from('profiles') as any)
       .update({ last_login_at: new Date().toISOString() })
       .eq('id', userId);
   };
@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!error && data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({
+      const { error: profileError } = await (supabase.from('profiles') as any).insert({
         id: data.user.id,
         email: data.user.email!,
         full_name: fullName || null,

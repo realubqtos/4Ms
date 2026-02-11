@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder, Palette, Star, Flame } from '../components/ui/icons';
-import { domainConfig, domainKeys } from '../lib/domainConfig';
+import { domainConfig, domains, type Domain } from '../lib/domainConfig';
+import type { Database } from '../lib/databases.types';
+
+type Figure = Database['public']['Tables']['figures']['Row'];
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -27,7 +30,7 @@ export function DashboardPage() {
         supabase.from('figures').select('*').eq('user_id', user.id),
       ]);
 
-      const figures = figuresResult.data || [];
+      const figures = (figuresResult.data || []) as Figure[];
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -161,7 +164,7 @@ export function DashboardPage() {
             4Ms Domains
           </h2>
           <div className="space-y-3">
-            {domainKeys.map((key) => {
+            {domains.filter((d): d is Exclude<Domain, 'general'> => d !== 'general').map((key) => {
               const domain = domainConfig[key];
               const Icon = domain.icon;
               return (

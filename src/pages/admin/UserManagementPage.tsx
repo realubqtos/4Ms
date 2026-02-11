@@ -51,7 +51,7 @@ export function UserManagementPage() {
 
     setActionLoading(true);
     try {
-      const { error: updateError } = await supabase.rpc('admin_update_user_role', {
+      const { error: updateError } = await (supabase.rpc as any)('admin_update_user_role', {
         target_user_id: userId,
         new_role: currentIsAdmin ? 'user' : 'admin',
         new_is_admin: !currentIsAdmin,
@@ -80,7 +80,7 @@ export function UserManagementPage() {
       if (error) throw error;
 
       if (currentUser) {
-        const { error: auditError } = await supabase.from('admin_audit_log').insert({
+        const { error: auditError } = await (supabase.from('admin_audit_log') as any).insert({
           admin_id: currentUser.id,
           action: 'send_password_reset',
           target_user_id: userId,

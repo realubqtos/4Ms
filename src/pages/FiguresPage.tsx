@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Palette, Star } from '../components/ui/icons';
 import { domainConfig, type Domain } from '../lib/domainConfig';
-import type { Database } from '../lib/database.types';
+import type { Database } from '../lib/databases.types';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
 
