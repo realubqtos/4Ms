@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Settings, LogOut } from '../ui/icons';
 import { useAuth } from '../../providers/AuthProvider';
-import { supabase } from '../../lib/supabase';
-import type { Database } from '../../lib/databases.types';
+import { supabase } from '../../providers/supabase';
+import type { Database } from '../../types/database';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import type { A2UICanvasData, DiagramNode, DiagramEdge, DiagramAnnotation, Point, CanvasState } from '../../types/diagram.types';
-import { defaultA2UIConfig } from '../../lib/a2uiConfig';
+import { defaultA2UIConfig } from '../../config/a2ui';
 import { ZoomIn, ZoomOut, Maximize2, Download } from 'lucide-react';
 
 interface A2UIRendererProps {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../providers/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Palette, Star } from '../components/ui/icons';
-import { domainConfig, type Domain } from '../lib/domainConfig';
-import type { Database } from '../lib/databases.types';
+import { visualizationConfig, visualizationTypes, type VisualizationType } from '../config/visualizations';
+import type { Database } from '../types/database';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
 
@@ -11,7 +11,7 @@ export function FiguresPage() {
   const { user } = useAuth();
   const [figures, setFigures] = useState<Figure[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDomain, setSelectedDomain] = useState<Domain | 'all'>('all');
+  const [selectedDomain, setSelectedDomain] = useState<VisualizationType | 'all'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
@@ -127,24 +127,24 @@ export function FiguresPage() {
           <Star size={16} style={{ color: 'var(--accent-3)' }} />
           Favorites ({favoriteCount})
         </button>
-        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => {
-          const config = domainConfig[domain];
+        {visualizationTypes.map((vizType) => {
+          const config = visualizationConfig[vizType];
           const Icon = config.icon;
           return (
             <button
-              key={domain}
-              onClick={() => setSelectedDomain(domain)}
+              key={vizType}
+              onClick={() => setSelectedDomain(vizType)}
               className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                selectedDomain === domain ? 'font-medium' : 'opacity-60'
+                selectedDomain === vizType ? 'font-medium' : 'opacity-60'
               }`}
               style={{
-                backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
+                backgroundColor: selectedDomain === vizType ? 'var(--surface)' : 'transparent',
                 color: 'var(--text-primary)'
               }}
             >
               <Icon size={16} style={{ color: config.color }} />
               <span className="capitalize">
-                {domain} ({figures.filter(f => f.domain === domain).length})
+                {vizType} ({figures.filter(f => f.domain === vizType).length})
               </span>
             </button>
           );
@@ -184,7 +184,7 @@ export function FiguresPage() {
           : 'space-y-4'
         }>
           {filteredFigures.map((figure) => {
-            const config = domainConfig[figure.domain as Domain];
+            const config = visualizationConfig[figure.domain as VisualizationType] || visualizationConfig.processes;
             const DomainIcon = config.icon;
             return (
               <div

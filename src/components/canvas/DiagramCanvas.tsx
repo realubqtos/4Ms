@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { ZoomIn, ZoomOut, Download, Maximize2, Image as ImageIcon, Layers } from '../ui/icons';
 import { A2UIRenderer } from './A2UIRenderer';
-import { parseA2UIData, validateA2UIData } from '../../lib/a2uiConfig';
+import { parseA2UIData, validateA2UIData } from '../../config/a2ui';
 import type { A2UICanvasData } from '../../types/diagram.types';
 
 interface DiagramCanvasProps {

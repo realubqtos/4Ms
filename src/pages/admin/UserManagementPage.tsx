@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../providers/supabase';
 import { useAuth } from '../../providers/AuthProvider';
 
 interface UserProfile {

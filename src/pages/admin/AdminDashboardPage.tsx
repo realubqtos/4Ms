@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../providers/supabase';
 import { Link } from 'react-router-dom';
 import { Users, Folder, BarChart3, Library } from '../../components/ui/icons';
 

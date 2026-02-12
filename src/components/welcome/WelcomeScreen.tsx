@@ -1,15 +1,8 @@
-import { domainConfig, domains } from '../../lib/domainConfig';
+import { visualizationConfig, visualizationTypes } from '../../config/visualizations';
 
 interface WelcomeScreenProps {
   onGetStarted?: () => void;
 }
-
-const domainDescriptions: Record<string, string> = {
-  mind: 'Neuroscience and psychology visualizations for understanding cognition and behavior',
-  matter: 'Chemistry and materials science figures for molecules, reactions, and structures',
-  motion: 'Physics and engineering diagrams for forces, energy, and dynamics',
-  mathematics: 'Mathematical visualizations for pure and applied mathematics',
-};
 
 export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
   return (
@@ -28,14 +21,14 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
           Welcome to 4Ms
         </h1>
         <p className="text-base sm:text-xl" style={{ color: 'var(--text-secondary)' }}>
-          mind | mathematics | motion | matter | science
+          Publication-ready scientific visualizations
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
-        {domains.map((key) => {
-          const domain = domainConfig[key];
-          const Icon = domain.icon;
+        {visualizationTypes.map((key) => {
+          const config = visualizationConfig[key];
+          const Icon = config.icon;
           return (
             <div
               key={key}
@@ -46,15 +39,15 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
             >
               <div
                 className="w-12 h-12 rounded-lg flex items-center justify-center mb-3"
-                style={{ backgroundColor: `color-mix(in srgb, ${domain.color} 15%, transparent)` }}
+                style={{ backgroundColor: `color-mix(in srgb, ${config.color} 15%, transparent)` }}
               >
-                <Icon size={24} style={{ color: domain.color }} />
+                <Icon size={24} style={{ color: config.color }} />
               </div>
               <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                {domain.name}
+                {config.name}
               </h3>
               <p style={{ color: 'var(--text-secondary)' }}>
-                {domainDescriptions[key]}
+                {config.description}
               </p>
             </div>
           );

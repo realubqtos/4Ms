@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../providers/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder } from '../components/ui/icons';
-import { domainConfig, type Domain } from '../lib/domainConfig';
-import type { Database } from '../lib/databases.types';
+import { visualizationConfig, visualizationTypes, type VisualizationType } from '../config/visualizations';
+import type { Database } from '../types/database';
 
 type Project = Database['public']['Tables']['projects']['Row'];
 
@@ -11,7 +11,7 @@ export function ProjectsPage() {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDomain, setSelectedDomain] = useState<Domain | 'all'>('all');
+  const [selectedDomain, setSelectedDomain] = useState<VisualizationType | 'all'>('all');
 
   useEffect(() => {
     loadProjects();
@@ -41,12 +41,10 @@ export function ProjectsPage() {
     : projects.filter(p => p.primary_domain === selectedDomain);
 
   const projectsByDomain = {
-    chemistry: projects.filter(p => p.primary_domain === 'chemistry'),
-    physics: projects.filter(p => p.primary_domain === 'physics'),
-    biology: projects.filter(p => p.primary_domain === 'biology'),
-    mathematics: projects.filter(p => p.primary_domain === 'mathematics'),
-    machine_learning: projects.filter(p => p.primary_domain === 'machine_learning'),
-    general: projects.filter(p => p.primary_domain === 'general'),
+    processes: projects.filter(p => p.primary_domain === 'processes'),
+    structural: projects.filter(p => p.primary_domain === 'structural'),
+    statistical: projects.filter(p => p.primary_domain === 'statistical'),
+    educational: projects.filter(p => p.primary_domain === 'educational'),
   };
 
   if (loading) {
@@ -92,23 +90,23 @@ export function ProjectsPage() {
         >
           All ({projects.length})
         </button>
-        {(['mind', 'matter', 'motion', 'mathematics'] as Domain[]).map((domain) => {
-          const config = domainConfig[domain];
+        {visualizationTypes.map((vizType) => {
+          const config = visualizationConfig[vizType];
           const Icon = config.icon;
           return (
             <button
-              key={domain}
-              onClick={() => setSelectedDomain(domain)}
+              key={vizType}
+              onClick={() => setSelectedDomain(vizType)}
               className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
-                selectedDomain === domain ? 'font-medium' : 'opacity-60'
+                selectedDomain === vizType ? 'font-medium' : 'opacity-60'
               }`}
               style={{
-                backgroundColor: selectedDomain === domain ? 'var(--surface)' : 'transparent',
+                backgroundColor: selectedDomain === vizType ? 'var(--surface)' : 'transparent',
                 color: 'var(--text-primary)'
               }}
             >
               <Icon size={16} style={{ color: config.color }} />
-              <span className="capitalize">{domain} ({(projectsByDomain as Record<Domain, Project[]>)[domain].length})</span>
+              <span className="capitalize">{vizType} ({(projectsByDomain as Record<VisualizationType, Project[]>)[vizType].length})</span>
             </button>
           );
         })}
@@ -144,7 +142,7 @@ export function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
-            const config = domainConfig[project.primary_domain as Domain];
+            const config = visualizationConfig[project.primary_domain as VisualizationType] || visualizationConfig.processes;
             const DomainIcon = config.icon;
             return (
               <div

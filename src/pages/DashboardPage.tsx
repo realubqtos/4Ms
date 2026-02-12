@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../providers/supabase';
 import { useAuth } from '../providers/AuthProvider';
 import { Folder, Palette, Star, Flame } from '../components/ui/icons';
-import { domainConfig, domains } from '../lib/domainConfig';
-import type { Database } from '../lib/databases.types';
+import { visualizationConfig, visualizationTypes } from '../config/visualizations';
+import type { Database } from '../types/database';
 
 type Figure = Database['public']['Tables']['figures']['Row'];
 
@@ -161,12 +161,12 @@ export function DashboardPage() {
           }}
         >
           <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
-            4Ms Domains
+            Visualization Types
           </h2>
           <div className="space-y-3">
-            {domains.map((key) => {
-              const domain = domainConfig[key];
-              const Icon = domain.icon;
+            {visualizationTypes.map((key) => {
+              const config = visualizationConfig[key];
+              const Icon = config.icon;
               return (
                 <div
                   key={key}
@@ -175,16 +175,16 @@ export function DashboardPage() {
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: `color-mix(in srgb, ${domain.color} 15%, transparent)` }}
+                    style={{ backgroundColor: `color-mix(in srgb, ${config.color} 15%, transparent)` }}
                   >
-                    <Icon size={20} style={{ color: domain.color }} />
+                    <Icon size={20} style={{ color: config.color }} />
                   </div>
                   <div>
                     <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                      {domain.name}
+                      {config.name}
                     </div>
                     <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      {domain.description}
+                      {config.description}
                     </div>
                   </div>
                 </div>
