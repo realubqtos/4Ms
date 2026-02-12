@@ -46,11 +46,14 @@ export function useDiagramGeneration() {
       });
 
       try {
-        const apiUrl = import.meta.env.VITE_BACKEND_URL || '';
-        const response = await fetch(`${apiUrl}/api/figures/generate-stream`, {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        const response = await fetch(`${supabaseUrl}/functions/v1/generate-diagram`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`,
           },
           body: JSON.stringify({
             prompt,
