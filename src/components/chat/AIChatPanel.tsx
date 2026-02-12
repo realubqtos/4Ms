@@ -268,25 +268,58 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
             {diagramState.isGenerating && (
               <div className="flex justify-start">
                 <div
-                  className="px-4 py-2 rounded-lg rounded-bl-sm flex items-center gap-2 glass glass-shadow"
+                  className="px-4 py-3 rounded-lg rounded-bl-sm glass glass-shadow space-y-2"
+                  style={{ minWidth: '200px' }}
                 >
-                  <div className="flex gap-1">
-                    <div
-                      className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '0ms' }}
-                    />
-                    <div
-                      className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '150ms' }}
-                    />
-                    <div
-                      className="w-2 h-2 rounded-full animate-bounce"
-                      style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '300ms' }}
-                    />
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <div
+                        className="w-2 h-2 rounded-full animate-bounce"
+                        style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '0ms' }}
+                      />
+                      <div
+                        className="w-2 h-2 rounded-full animate-bounce"
+                        style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '150ms' }}
+                      />
+                      <div
+                        className="w-2 h-2 rounded-full animate-bounce"
+                        style={{ backgroundColor: 'var(--text-tertiary)', animationDelay: '300ms' }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {diagramState.message}
+                    </span>
                   </div>
-                  <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {diagramState.message}
-                  </span>
+                  {diagramState.iteration > 0 && (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                        <span>Iteration {diagramState.iteration}</span>
+                        <span>{diagramState.currentStage}</span>
+                      </div>
+                      <div
+                        className="h-1 rounded-full overflow-hidden"
+                        style={{ backgroundColor: 'var(--border)' }}
+                      >
+                        <div
+                          className="h-full transition-all duration-300 rounded-full"
+                          style={{
+                            width: `${(diagramState.iteration / 5) * 100}%`,
+                            backgroundColor: 'var(--accent-1)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {diagramState.imageData && (
+                    <div className="mt-2">
+                      <img
+                        src={diagramState.imageData}
+                        alt="Generation preview"
+                        className="w-full rounded-md"
+                        style={{ maxHeight: '120px', objectFit: 'contain' }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}

@@ -17,119 +17,79 @@ Deno.serve(async (req: Request) => {
   try {
     const { prompt, type, domain, user_id, project_id, data_info } = await req.json();
 
-    const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
-    if (!geminiApiKey) {
-      throw new Error("GEMINI_API_KEY not configured");
-    }
+    const backendUrl = Deno.env.get("BACKEND_URL") || "http://localhost:8000";
 
     // Create a streaming response
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          // Send initial status
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({
-              type: "status",
-              data: { stage: "init", message: "Starting generation...", iteration: 0 }
-            })}\n\n`)
-          );
-
-          // Call Gemini Image Generation API
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({
-              type: "status",
-              data: { stage: "generating", message: "Generating diagram image...", iteration: 1 }
-            })}\n\n`)
-          );
-
+          // Call paperbanana backend with SSE streaming
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`,
+            `${backendUrl}/api/paperbanana/generate`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                contents: [{
-                  parts: [{
-                    text: `Generate a high-quality scientific diagram image.
-
-Type: ${type}
-Domain: ${domain}
-
-User request: ${prompt}
-
-Requirements:
-- Clear, publication-quality visualization
-- Accurate scientific representation
-- Well-labeled axes, vectors, and components
-- Professional color scheme
-- Readable text and annotations
-- High contrast for visibility
-
-Create the actual visual diagram, not a description.`
-                  }]
-                }],
-                generationConfig: {
-                  temperature: 1.0,
-                  topP: 0.95,
-                  topK: 20
-                }
+                prompt: prompt,
+                domain: domain || "general",
+                aspectRatio: "16:9",
+                imageSize: "2K",
+                iterationLimit: 5
               })
             }
           );
 
           if (!response.ok) {
             const errorData = await response.text();
-            throw new Error(`Gemini API error: ${response.statusText} - ${errorData}`);
+            throw new Error(`Backend API error: ${response.statusText} - ${errorData}`);
           }
 
-          const data = await response.json();
+          // Check if response is SSE stream
+          const contentType = response.headers.get("content-type");
+          if (contentType?.includes("text/event-stream")) {
+            // Stream SSE events from backend to frontend
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
 
-          // Extract image from response
-          const imagePart = data.candidates?.[0]?.content?.parts?.[0];
-          let imageData = null;
+            if (!reader) {
+              throw new Error("No response stream available");
+            }
 
-          if (imagePart?.inlineData) {
-            // Image is returned as inline data
-            const mimeType = imagePart.inlineData.mimeType;
-            const base64Data = imagePart.inlineData.data;
-            imageData = `data:${mimeType};base64,${base64Data}`;
-          } else if (imagePart?.text) {
-            // Fallback: If model returns text instead of image
-            throw new Error("Model returned text instead of image. The image generation model may not be available.");
-          }
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
 
-          if (!imageData) {
-            throw new Error("No image data received from Gemini API");
-          }
+              // Forward SSE events to frontend
+              const chunk = decoder.decode(value, { stream: true });
+              controller.enqueue(encoder.encode(chunk));
+            }
+          } else {
+            // Handle non-streaming response
+            const data = await response.json();
 
-          // Send image preview with real image
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({
-              type: "image_preview",
-              data: {
-                image_data: imageData,
-                iteration: 1
-              }
-            })}\n\n`)
-          );
+            if (data.error) {
+              throw new Error(data.error);
+            }
 
-          // Send completion with real image
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({
-              type: "complete",
-              data: {
-                figure_id: crypto.randomUUID(),
+            // Send completion event
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({
+                type: "complete",
                 data: {
-                  image_data: imageData,
-                  prompt: prompt,
-                  type: type,
-                  domain: domain,
-                  model: "gemini-2.5-flash-image"
+                  figure_id: crypto.randomUUID(),
+                  data: {
+                    image_data: data.image_data,
+                    prompt: prompt,
+                    type: type,
+                    domain: domain,
+                    model: "paperbanana",
+                    iterations: data.iterations || 1
+                  }
                 }
-              }
-            })}\n\n`)
-          );
+              })}\n\n`)
+            );
+          }
 
           controller.close();
         } catch (error) {
@@ -137,18 +97,15 @@ Create the actual visual diagram, not a description.`
           let suggestions = [];
 
           // Specific error handling
-          if (error.message.includes("quota")) {
-            errorMessage = "API quota exceeded";
-            suggestions = ["Try again later", "Check your API plan limits"];
-          } else if (error.message.includes("returned text instead of image")) {
-            errorMessage = "Image generation failed - model configuration issue";
-            suggestions = ["Try a simpler prompt", "Contact support"];
-          } else if (error.message.includes("No image data")) {
-            errorMessage = "Image generation returned empty response";
-            suggestions = ["Try rephrasing your prompt", "Simplify the request"];
-          } else if (error.message.includes("API error")) {
-            errorMessage = "Gemini API error occurred";
-            suggestions = ["Check your API key", "Try again in a moment"];
+          if (error.message.includes("Backend API error")) {
+            errorMessage = "Backend generation service error";
+            suggestions = ["Ensure backend is running", "Check backend logs"];
+          } else if (error.message.includes("ECONNREFUSED") || error.message.includes("fetch failed")) {
+            errorMessage = "Cannot connect to generation backend";
+            suggestions = ["Start the backend server", "Check BACKEND_URL configuration"];
+          } else if (error.message.includes("timeout")) {
+            errorMessage = "Generation timeout - request took too long";
+            suggestions = ["Try a simpler prompt", "Reduce iteration limit"];
           }
 
           controller.enqueue(
