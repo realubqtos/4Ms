@@ -35,67 +35,97 @@ Deno.serve(async (req: Request) => {
             })}\n\n`)
           );
 
-          // Call Gemini API
+          // Call Gemini Image Generation API
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({
               type: "status",
-              data: { stage: "planning", message: "Planning diagram...", iteration: 1 }
+              data: { stage: "generating", message: "Generating diagram image...", iteration: 1 }
             })}\n\n`)
           );
 
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiApiKey}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 contents: [{
                   parts: [{
-                    text: `Generate a detailed description for a ${type} figure in the ${domain} domain.
+                    text: `Generate a high-quality scientific diagram image.
 
-User prompt: ${prompt}
+Type: ${type}
+Domain: ${domain}
 
-Provide a structured description that includes:
-1. Figure type and purpose
-2. Key elements to include
-3. Layout and composition suggestions
-4. Color scheme recommendations
-5. Labels and annotations needed
+User request: ${prompt}
 
-Format the response as a detailed technical specification.`
+Requirements:
+- Clear, publication-quality visualization
+- Accurate scientific representation
+- Well-labeled axes, vectors, and components
+- Professional color scheme
+- Readable text and annotations
+- High contrast for visibility
+
+Create the actual visual diagram, not a description.`
                   }]
-                }]
+                }],
+                generationConfig: {
+                  temperature: 1.0,
+                  topP: 0.95,
+                  topK: 20
+                }
               })
             }
           );
 
           if (!response.ok) {
-            throw new Error(`Gemini API error: ${response.statusText}`);
+            const errorData = await response.text();
+            throw new Error(`Gemini API error: ${response.statusText} - ${errorData}`);
           }
 
           const data = await response.json();
-          const description = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated";
 
-          // Send image preview (placeholder for now)
+          // Extract image from response
+          const imagePart = data.candidates?.[0]?.content?.parts?.[0];
+          let imageData = null;
+
+          if (imagePart?.inlineData) {
+            // Image is returned as inline data
+            const mimeType = imagePart.inlineData.mimeType;
+            const base64Data = imagePart.inlineData.data;
+            imageData = `data:${mimeType};base64,${base64Data}`;
+          } else if (imagePart?.text) {
+            // Fallback: If model returns text instead of image
+            throw new Error("Model returned text instead of image. The image generation model may not be available.");
+          }
+
+          if (!imageData) {
+            throw new Error("No image data received from Gemini API");
+          }
+
+          // Send image preview with real image
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({
               type: "image_preview",
               data: {
-                image_data: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+RGlhZ3JhbSBHZW5lcmF0aW9uIFBsYWNlaG9sZGVyPC90ZXh0Pjwvc3ZnPg==",
-                iteration: 2
+                image_data: imageData,
+                iteration: 1
               }
             })}\n\n`)
           );
 
-          // Send completion
+          // Send completion with real image
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({
               type: "complete",
               data: {
                 figure_id: crypto.randomUUID(),
                 data: {
-                  image_data: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+RGlhZ3JhbSBHZW5lcmF0ZWQ8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI2MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+JHt0eXBlfSAtICR7ZG9tYWlufTwvdGV4dD48L3N2Zz4=",
-                  description
+                  image_data: imageData,
+                  prompt: prompt,
+                  type: type,
+                  domain: domain,
+                  model: "gemini-2.5-flash-image"
                 }
               }
             })}\n\n`)
@@ -103,10 +133,32 @@ Format the response as a detailed technical specification.`
 
           controller.close();
         } catch (error) {
+          let errorMessage = error.message;
+          let suggestions = [];
+
+          // Specific error handling
+          if (error.message.includes("quota")) {
+            errorMessage = "API quota exceeded";
+            suggestions = ["Try again later", "Check your API plan limits"];
+          } else if (error.message.includes("returned text instead of image")) {
+            errorMessage = "Image generation failed - model configuration issue";
+            suggestions = ["Try a simpler prompt", "Contact support"];
+          } else if (error.message.includes("No image data")) {
+            errorMessage = "Image generation returned empty response";
+            suggestions = ["Try rephrasing your prompt", "Simplify the request"];
+          } else if (error.message.includes("API error")) {
+            errorMessage = "Gemini API error occurred";
+            suggestions = ["Check your API key", "Try again in a moment"];
+          }
+
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({
               type: "error",
-              data: { message: error.message }
+              data: {
+                message: errorMessage,
+                suggestions: suggestions,
+                originalError: error.message
+              }
             })}\n\n`)
           );
           controller.close();
