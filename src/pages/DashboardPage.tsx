@@ -181,7 +181,7 @@ export function DashboardPage() {
                   </div>
                   <div>
                     <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                      {domain.label}
+                      {domain.name}
                     </div>
                     <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {domain.description}

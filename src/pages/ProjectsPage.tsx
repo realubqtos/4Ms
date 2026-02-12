@@ -41,10 +41,12 @@ export function ProjectsPage() {
     : projects.filter(p => p.primary_domain === selectedDomain);
 
   const projectsByDomain = {
-    mind: projects.filter(p => p.primary_domain === 'mind'),
-    matter: projects.filter(p => p.primary_domain === 'matter'),
-    motion: projects.filter(p => p.primary_domain === 'motion'),
+    chemistry: projects.filter(p => p.primary_domain === 'chemistry'),
+    physics: projects.filter(p => p.primary_domain === 'physics'),
+    biology: projects.filter(p => p.primary_domain === 'biology'),
     mathematics: projects.filter(p => p.primary_domain === 'mathematics'),
+    machine_learning: projects.filter(p => p.primary_domain === 'machine_learning'),
+    general: projects.filter(p => p.primary_domain === 'general'),
   };
 
   if (loading) {

@@ -51,7 +51,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
                 <Icon size={24} style={{ color: domain.color }} />
               </div>
               <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                {domain.label}
+                {domain.name}
               </h3>
               <p style={{ color: 'var(--text-secondary)' }}>
                 {domainDescriptions[key]}
