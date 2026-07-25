@@ -30,3 +30,4 @@ wheels/
 venv/
 ENV/
 env/
+backend/server.log
