@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { ZoomIn, ZoomOut, Download, Maximize2, Image as ImageIcon } from '../ui/icons';
+import { VerificationPanel } from './VerificationPanel';
+import { FormDecision, VerificationReport } from '../../hooks/useDiagramGeneration';
 
 interface DiagramCanvasProps {
   imageData?: string;
@@ -7,6 +9,10 @@ interface DiagramCanvasProps {
   iteration?: number;
   stage?: string;
   message?: string;
+  verificationReport?: VerificationReport | null;
+  formDecision?: FormDecision | null;
+  scopeOfValidity?: string | null;
+  refused?: boolean;
 }
 
 export function DiagramCanvas({
@@ -14,7 +20,11 @@ export function DiagramCanvas({
   isGenerating = false,
   iteration = 0,
   stage = '',
-  message = ''
+  message = '',
+  verificationReport = null,
+  formDecision = null,
+  scopeOfValidity = null,
+  refused = false
 }: DiagramCanvasProps) {
   const [zoom, setZoom] = useState(100);
 
@@ -95,6 +105,25 @@ export function DiagramCanvas({
   }
 
   if (!imageData) {
+    if (refused || verificationReport) {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="flex-1 flex items-center justify-center p-8">
+            <p className="text-sm max-w-md text-center" style={{ color: 'var(--text-secondary)' }}>
+              {refused
+                ? 'This claim cannot be faithfully visualized with the supported forms. The decision rationale below explains why — no data was fabricated and no non-fitting chart was forced.'
+                : 'Verification did not pass — the failing report is below.'}
+            </p>
+          </div>
+          <VerificationPanel
+            report={verificationReport}
+            decision={formDecision}
+            scopeOfValidity={scopeOfValidity}
+            refused={refused}
+          />
+        </div>
+      );
+    }
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <div className="text-center max-w-md">
@@ -188,6 +217,12 @@ export function DiagramCanvas({
           />
         </div>
       </div>
+      <VerificationPanel
+        report={verificationReport}
+        decision={formDecision}
+        scopeOfValidity={scopeOfValidity}
+        refused={refused}
+      />
     </div>
   );
 }

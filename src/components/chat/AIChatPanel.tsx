@@ -19,6 +19,7 @@ interface AIChatPanelProps {
 export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [verifiedMode, setVerifiedMode] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { generateDiagram, state: diagramState } = useDiagram();
@@ -54,18 +55,31 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
               content: `Error: ${diagramState.error}`
             }
           ]);
-        } else if (diagramState.imageData) {
+        } else if (diagramState.refused) {
           setMessages(prev => [
             ...prev.slice(0, -1),
             {
               ...lastMessage,
-              content: 'Diagram generated successfully! You can view it in the canvas.'
+              content: diagramState.formDecision?.unsupported_route
+                ? `This claim needs the ${diagramState.formDecision.unsupported_route.needed_rule} construction rule, which isn't validated yet. ${diagramState.formDecision.unsupported_route.explanation}`
+                : `I can't faithfully visualize this claim: ${diagramState.formDecision?.rationale || 'no fitting form is available.'} No data was invented and no non-fitting chart was forced.`
+            }
+          ]);
+        } else if (diagramState.imageData) {
+          const v = diagramState.verificationReport;
+          setMessages(prev => [
+            ...prev.slice(0, -1),
+            {
+              ...lastMessage,
+              content: v
+                ? `Diagram generated and verified (${v.checks.filter(c => c.passed).length}/${v.checks.length} checks passed). The verification report is under the canvas.`
+                : 'Diagram generated successfully! You can view it in the canvas.'
             }
           ]);
         }
       }
     }
-  }, [diagramState.isGenerating, diagramState.error, diagramState.imageData]);
+  }, [diagramState.isGenerating, diagramState.error, diagramState.imageData, diagramState.refused]);
 
   const handleSend = async () => {
     if (!input.trim() || diagramState.isGenerating || !user) return;
@@ -93,7 +107,7 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
     const domain = detectDomain(prompt);
 
     try {
-      await generateDiagram(prompt, type, domain, user.id);
+      await generateDiagram(prompt, type, domain, user.id, undefined, undefined, verifiedMode);
     } catch (error) {
       setMessages(prev => [
         ...prev.slice(0, -1),
@@ -343,6 +357,18 @@ export function AIChatPanel({ isOpen, onToggle }: AIChatPanelProps) {
                 </button>
               </div>
             </div>
+            <label
+              className="flex items-center gap-2 mt-2 text-xs cursor-pointer select-none"
+              style={{ color: 'var(--text-secondary)' }}
+              title="Verified mode: spec-mediated generation with a deterministic verification report — no fabricated data, no forced canonicalization. Unchecked uses the classic Gemini pipeline."
+            >
+              <input
+                type="checkbox"
+                checked={verifiedMode}
+                onChange={(e) => setVerifiedMode(e.target.checked)}
+              />
+              Verified mode (Vizualizer engine)
+            </label>
           </div>
         </div>
       </div>

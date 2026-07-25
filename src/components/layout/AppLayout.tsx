@@ -96,6 +96,10 @@ export function AppLayout({ adminPage }: AppLayoutProps = {}) {
             iteration={diagramState.iteration}
             stage={diagramState.currentStage}
             message={diagramState.message}
+            verificationReport={diagramState.verificationReport}
+            formDecision={diagramState.formDecision}
+            scopeOfValidity={diagramState.scopeOfValidity}
+            refused={diagramState.refused}
           />
         );
     }
