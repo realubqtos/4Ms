@@ -1,0 +1,18 @@
+# 4Ms FastAPI backend (agents pipeline + vizcore verified mode).
+# Build context: backend/ . Runs keyless (stub provider, orchestrator disabled)
+# unless GEMINI_API_KEY / SUPABASE_* are provided at runtime — never bake them.
+FROM docker.io/library/python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Smoke tests in the build itself: vizcore integration suite is keyless (5/5),
+# and importing main proves the app object constructs without secrets.
+RUN python tests/test_vizcore_integration.py && python -c "import main"
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
