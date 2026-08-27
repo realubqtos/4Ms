@@ -17,7 +17,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+/lib/
 lib64/
 parts/
 sdist/
@@ -30,3 +30,4 @@ wheels/
 venv/
 ENV/
 env/
+backend/server.log

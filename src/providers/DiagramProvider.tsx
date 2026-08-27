@@ -9,7 +9,8 @@ interface DiagramContextType {
     domain: string,
     userId: string,
     projectId?: string,
-    dataInfo?: any
+    dataInfo?: any,
+    verified?: boolean
   ) => Promise<void>;
   reset: () => void;
 }

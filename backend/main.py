@@ -257,6 +257,43 @@ async def generate_figure_stream(request: StreamingDiagramRequest):
     )
 
 
+
+
+# ── The Vizualizer: verified generation mode ─────────────────────────
+# Spec-mediated, verification-gated pipeline (backend/vizcore).
+# Works keyless via the deterministic stub provider; persists to Supabase
+# when configured. See vizcore/__init__.py for provenance.
+from vizcore import generate_verified  # noqa: E402
+
+
+@app.post("/api/figures/generate-verified-stream")
+async def generate_figure_verified_stream(request: StreamingDiagramRequest):
+    async def event_generator():
+        try:
+            async for event in generate_verified(
+                prompt=request.prompt,
+                diagram_type=request.type,
+                domain=request.domain,
+                user_id=request.user_id,
+                project_id=request.project_id,
+                data_info=request.data_info,
+                supabase_client=supabase,
+            ):
+                yield f"data: {json.dumps(event)}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'data': {'message': str(e)}})}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
